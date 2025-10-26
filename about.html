@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About Us | AutoBot Motors</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --warm: #f1c40f;
+      --dark-bg: #0c0f16;
+      --text: #e0e0e0;
+      --glow: rgba(241,196,15,0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: radial-gradient(circle at top left, #061a2d, #01040c);
+      color: var(--text);
+    }
+
+    /* NAVBAR */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      padding: 15px 40px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    nav .logo {
+      font-weight: 700;
+      font-size: 1.2em;
+      color: var(--warm);
+    }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    nav a:hover { color: var(--warm); }
+
+    /* HEADER */
+    header {
+      text-align: center;
+      padding: 80px 20px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.3));
+      backdrop-filter: blur(6px);
+      animation: fadeIn 1s ease;
+    }
+    header h1 {
+      color: var(--warm);
+      font-size: 2.4em;
+      margin-bottom: 10px;
+    }
+    header p {
+      max-width: 700px;
+      margin: 0 auto;
+      font-size: 1.1em;
+      color: #bfcde0;
+    }
+
+    /* SECTION GENERAL */
+    section {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 40px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      backdrop-filter: blur(8px);
+      animation: fadeInUp 1.2s ease;
+    }
+    h2 { color: var(--warm); margin-bottom: 20px; }
+    p { line-height: 1.6; }
+
+    /* TEAM GRID */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+    .team-card {
+      background: rgba(255,255,255,0.08);
+      border-radius: 12px;
+      text-align: center;
+      padding: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .team-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255,255,255,0.12);
+      box-shadow: 0 0 20px var(--glow);
+    }
+    .team-card img {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      border: 3px solid var(--warm);
+      margin-bottom: 12px;
+    }
+    .socials a {
+      color: white;
+      margin: 0 6px;
+      font-size: 1.3em;
+      transition: all 0.3s ease;
+    }
+    .socials a:hover { color: var(--warm); text-shadow: 0 0 10px var(--warm); }
+
+    /* TIMELINE */
+    .timeline {
+      position: relative;
+      margin-top: 50px;
+      padding-left: 40px;
+      border-left: 3px solid var(--warm);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 40px;
+      padding-left: 20px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 1s forwards;
+    }
+    .timeline-item:nth-child(odd) { animation-delay: 0.3s; }
+    .timeline-item:nth-child(even) { animation-delay: 0.6s; }
+    .timeline-item::before {
+      content: "🚗";
+      position: absolute;
+      left: -36px;
+      background: var(--warm);
+      color: #0c0f16;
+      border-radius: 50%;
+      width: 26px; height: 26px;
+      text-align: center;
+      line-height: 26px;
+      font-size: 1em;
+      box-shadow: 0 0 10px var(--glow);
+    }
+    .timeline h4 {
+      color: var(--warm);
+      margin-bottom: 6px;
+    }
+
+    /* JOIN OUR TEAM */
+    .join-section {
+      margin-top: 60px;
+      text-align: center;
+    }
+    .join-section p {
+      max-width: 700px;
+      margin: 0 auto 20px;
+      color: #cfd9e5;
+    }
+    .join-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .join-form input, .join-form textarea {
+      width: 80%;
+      max-width: 500px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255,255,255,0.07);
+      color: white;
+      outline: none;
+    }
+    .join-form button {
+      background: linear-gradient(90deg, var(--warm), #f39c12);
+      border: none;
+      color: #0c0f16;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .join-form button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px var(--glow);
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9em;
+      background: rgba(0,0,0,0.5);
+      margin-top: 50px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">🚗 <strong>AutoBot Motors</strong></div>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="showroom.html">Showroom</a>
+      <a href="testimonials.html">Testimonials</a>
+      <a href="about.html">About Us</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </nav>
+
+  <header>
+    <h1>About AutoBot Motors</h1>
+    <p>Driven by innovation, fueled by excellence. Learn more about who we are and what makes AutoBot a leader in the automotive world.</p>
+  </header>
+
+  <section>
+    <h2>Our Mission</h2>
+    <p>At AutoBot Motors, our mission is to redefine the automotive experience by blending cutting-edge technology, sustainable design, and unmatched customer care. From luxury sedans to futuristic EVs, every model we create represents passion, precision, and performance.</p>
+
+    <h2>Our Vision</h2>
+    <p>We envision a world where every driver enjoys safety, style, and sustainability — powered by smart technology and a human touch.</p>
+
+    <h2>Meet the Team</h2>
+    <div class="team-grid">
+      <div class="team-card"><img src="https://i.pravatar.cc/150?img=12"><h4>Alex Rivera</h4><p>Founder & CEO</p></div>
+      <div class="team-card"><img src="https://i.pravatar.cc/150?img=36"><h4>Mia Chen</h4><p>Head of Design</p></div>
+      <div class="team-card"><img src="https://i.pravatar.cc/150?img=25"><h4>David Brooks</h4><p>Chief Engineer</p></div>
+      <div class="team-card"><img src="https://i.pravatar.cc/150?img=68"><h4>Sophia Laurent</h4><p>Marketing Director</p></div>
+      <div class="team-card"><img src="https://i.pravatar.cc/150?img=47"><h4>Liam Patel</h4><p>Sales Manager</p></div>
+      <div class="team-card"><img src="https://i.pravatar.cc/150?img=19"><h4>Nina Rodriguez</h4><p>Customer Relations Lead</p></div>
+    </div>
+
+    <h2>Our Journey</h2>
+    <div class="timeline">
+      <div class="timeline-item"><h4>2015 — Founded</h4><p>AutoBot Motors began with a small team passionate about intelligent automotive design.</p></div>
+      <div class="timeline-item"><h4>2018 — First SmartCar Prototype</h4><p>Launched our first AI-assisted car that adapts to driving patterns and road environments.</p></div>
+      <div class="timeline-item"><h4>2020 — Electric Revolution</h4><p>Released the AutoBot E-Series: luxury EVs with unparalleled range and performance.</p></div>
+      <div class="timeline-item"><h4>2023 — Global Expansion</h4><p>Expanded to over 30 countries with dedicated showrooms and service networks worldwide.</p></div>
+      <div class="timeline-item"><h4>2025 — Autonomous Future</h4><p>Introducing next-gen self-driving vehicles, blending comfort, AI, and human trust.</p></div>
+    </div>
+
+    <div class="join-section">
+      <h2>Join Our Team</h2>
+      <p>We’re always looking for passionate innovators to join our growing family. Whether you’re an engineer, designer, or strategist — AutoBot is where future mobility begins.</p>
+
+      <form class="join-form" id="joinForm">
+        <input type="text" name="name" placeholder="Full Name" required>
+        <input type="email" name="email" placeholder="Email Address" required>
+        <textarea name="message" rows="3" placeholder="Why do you want to join AutoBot?" required></textarea>
+        <button type="submit">🚀 Apply Now</button>
+        <p id="joinMsg" style="display:none;color:#6cf;">Thanks for applying! We'll contact you soon.</p>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    © 2025 AutoBot Motors | Innovation in Motion
+  </footer>
+
+  <script>
+    document.getElementById("joinForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      const msg = document.getElementById("joinMsg");
+      msg.style.display = "block";
+      this.reset();
+      setTimeout(()=> msg.style.display = "none", 3000);
+    });
+  </script>
+
+</body>
+</html>

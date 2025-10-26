@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Showroom — Pro</title>
+
+  <!-- Font Awesome for icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    /* ====================
+       Root, reset & utils
+       ==================== */
+    :root{
+      --accent:#1a2a6c;
+      --accent-warm:#f1c40f;
+      --glass-1: rgba(255,255,255,0.06);
+      --glass-2: rgba(255,255,255,0.10);
+      --card-radius: 12px;
+      --max-width: 1120px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; margin:0; font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif; -webkit-font-smoothing:antialiased;}
+    a{color:inherit; text-decoration:none}
+
+    /* ====================
+       Animated background
+       ==================== */
+    body{
+      background: linear-gradient(120deg,#0f1724 0%, #1f2b38 40%, #102027 100%);
+      color: #e7eef7;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+    .page {
+      width:100%;
+      max-width: var(--max-width);
+      margin: 24px;
+    }
+
+    /* ====================
+       Header & Nav
+       ==================== */
+    header {
+      background: linear-gradient(90deg,#1a2a6c,#b21f1f,#fdbb2d);
+      padding: 28px 20px;
+      border-radius: 14px;
+      color:#fff;
+      text-align:center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      position:relative;
+    }
+    header h1 { margin:0; font-size:1.9rem; letter-spacing:0.6px;}
+    header p { margin:6px 0 0; opacity:0.95; font-size:0.98rem; }
+
+    nav {
+      margin-top: -28px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      background: rgba(3,7,18,0.16);
+      backdrop-filter: blur(8px);
+      padding: 10px 14px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.25);
+    }
+    .nav-left { display:flex; gap:14px; align-items:center; }
+    .nav-left a { color:#fff; padding:8px 10px; border-radius:8px; font-weight:600; }
+    .nav-left a:hover{ background: rgba(255,255,255,0.03); color:var(--accent-warm) }
+    .nav-right { display:flex; gap:10px; align-items:center; }
+    #searchBar { padding:8px 10px; border-radius:20px; border:none; background: rgba(255,255,255,0.03); color:#fff; outline:none; min-width:160px; }
+    #searchBar::placeholder { color: rgba(255,255,255,0.6); }
+    #searchIcon { color:#fff; cursor:pointer; font-size:18px; }
+
+    /* ====================
+       Hero / CTA (small)
+       ==================== */
+    .hero {
+      margin-top:18px;
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius: 10px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      color:#f3f3f3;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    }
+    .hero .text { max-width:70%; }
+    .hero .actions { display:flex; gap:10px; }
+
+    .btn { padding:10px 14px; border-radius:10px; border:none; cursor:pointer; font-weight:700; }
+    .btn-primary { background: linear-gradient(90deg,var(--accent), #2b5aa7); color:#fff; }
+    .btn-warm { background: linear-gradient(90deg,var(--accent-warm), #f39c12); color:#062033; }
+
+    /* ====================
+       Showroom controls
+       ==================== */
+    section { margin-top:22px; width:100%; }
+    h2.section-title { color:var(--accent-warm); margin:12px 0; font-size:1.4rem; }
+
+    .controls { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:18px; }
+    .filter-btn {
+      background: var(--glass-1);
+      border: 1px solid rgba(255,255,255,0.04);
+      color: #fff;
+      padding:8px 14px;
+      border-radius:20px;
+      cursor:pointer;
+      font-weight:600;
+      transition: transform .18s, background .18s;
+    }
+    .filter-btn:hover{ transform: translateY(-3px); }
+    .filter-btn.active{ background: var(--accent-warm); color:#000; box-shadow: 0 8px 18px rgba(0,0,0,0.35); }
+
+    #miniSearch { margin-left:auto; padding:8px 12px; min-width:200px; border-radius:10px; border:none; background: rgba(255,255,255,0.03); color:#fff; }
+
+    /* ====================
+       Car grid + cards
+       ==================== */
+    .car-grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap:18px;
+    }
+
+    .car-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius: var(--card-radius);
+      padding:12px;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.25);
+      transition: transform .25s ease, box-shadow .25s ease;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      position:relative;
+      overflow:hidden;
+    }
+    .car-card:hover{ transform: translateY(-8px); box-shadow: 0 18px 50px rgba(2,6,23,0.35); }
+
+    .car-card img { width:100%; height:160px; object-fit:cover; border-radius:8px; display:block; }
+    .card-body { padding:6px 2px; display:flex; flex-direction:column; gap:6px; flex:1; }
+    .meta { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .meta h3 { margin:0; font-size:1rem; color:var(--accent-warm); }
+    .meta .price { color:#fff; font-weight:700; }
+
+    .card-actions { display:flex; gap:8px; margin-top:8px; }
+    .small { padding:8px 10px; border-radius:8px; border:none; cursor:pointer; }
+
+    .wishlist-btn { position:absolute; top:10px; right:10px; background: rgba(0,0,0,0.35); color:#fff; border-radius:8px; padding:8px; display:flex; gap:6px; align-items:center; border:1px solid rgba(255,255,255,0.03); }
+    .wishlist-btn.active { background: var(--accent-warm); color:#062033; }
+
+    /* ====================
+       Modal (details) & Test Drive
+       ==================== */
+    .modal {
+      position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+      background: rgba(2,6,23,0.6); z-index:1200; padding:16px;
+    }
+    .modal.show { display:flex; }
+    .modal-card {
+      width:100%; max-width:920px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px; padding:18px; color:#fff; box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+      display:flex; gap:14px; align-items:flex-start; overflow:hidden;
+    }
+    .gallery { width:48%; display:flex; flex-direction:column; gap:10px; }
+    .gallery-main { width:100%; height:320px; border-radius:8px; object-fit:cover; background:#111; }
+    .gallery-thumbs { display:flex; gap:8px; margin-top:8px; }
+    .gallery-thumbs img { width:72px; height:56px; object-fit:cover; border-radius:6px; cursor:pointer; opacity:0.8; border:2px solid transparent; }
+    .gallery-thumbs img.active { border-color: var(--accent-warm); opacity:1; transform:scale(1.02); }
+
+    .modal-info { flex:1; min-width:260px; display:flex; flex-direction:column; gap:10px; }
+    .rating { color: #ffd700; }
+    .modal-actions { display:flex; gap:10px; margin-top:auto; }
+
+    .modal-close { position:absolute; right:18px; top:12px; background: rgba(0,0,0,0.18); border-radius:8px; padding:6px 8px; cursor:pointer; font-size:18px; }
+
+    /* Test drive form inside modal (or separate) */
+    form#tdForm { display:flex; flex-direction:column; gap:8px; margin-top:6px; }
+    form input, form select { padding:10px; border-radius:8px; border:none; outline:none; background: rgba(255,255,255,0.03); color:#fff; }
+    .td-success { padding:8px; border-radius:8px; background: rgba(37,211,102,0.12); color:#c9f7dd; display:none; }
+    .td-error { padding:8px; border-radius:8px; background: rgba(245,101,101,0.12); color:#ffdede; display:none; }
+
+    /* ====================
+       Wishlist drawer
+       ==================== */
+    .wishlist-bubble {
+      position: fixed;
+      right: 24px;
+      bottom: 100px;
+      background: var(--glass-2);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display:flex; gap:10px; align-items:center; z-index:1100;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+    }
+    .wish-count { background: var(--accent-warm); color:#062033; font-weight:800; padding:6px 10px; border-radius:999px; }
+
+    .wish-drawer { position:fixed; right: 18px; bottom: 160px; width:320px; max-height:440px; overflow:auto; background: rgba(0,0,0,0.7); border-radius:12px; padding:12px; display:none; z-index:1105; }
+    .wish-drawer.show { display:block; }
+
+    /* ====================
+       Social left icons
+       ==================== */
+    .social-left { position:fixed; left:18px; bottom: 24px; display:flex; flex-direction:column; gap:8px; z-index:1100; }
+    .social-left a { width:48px; height:48px; display:inline-flex; align-items:center; justify-content:center; background: rgba(255,255,255,0.04); border-radius:10px; color:#fff; transition: transform .18s, box-shadow .18s; }
+    .social-left a:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.45); filter: brightness(1.1); }
+
+    /* ====================
+       Animations
+       ==================== */
+    @keyframes fadeInUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform:none; } }
+    .animate-in { animation: fadeInUp .6s ease both; }
+
+    /* Responsive tweaks */
+    @media (max-width:900px) {
+      .modal-card { flex-direction:column; padding:12px; }
+      .gallery { width:100%; }
+      .gallery-main { height:240px; }
+      .nav-left a { padding:6px; font-size:0.95rem; }
+      #miniSearch { min-width:120px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+    <!-- HEADER -->
+    <header class="animate-in" role="banner">
+      <h1>Auto Spares & Car Showroom — Shaun</h1>
+      <p>Premium cars, genuine parts, easy bookings — shop & test drive with confidence.</p>
+    </header>
+
+    <!-- NAV -->
+    <nav class="animate-in" aria-label="Primary navigation" style="margin-top:14px;">
+      <div class="nav-left">
+        <a href="index.html">Home</a>
+        <a href="showroomsection.html">Showroom</a>
+        <a href="testmonials.html">Testimonials</a>
+        <a href="contact.html">Contact</a>
+        <a href="about.html">About Us</a>
+      </div>
+
+      <div class="nav-right" aria-hidden="false">
+        <input id="searchBar" placeholder="Search cars or features (e.g. 'Tesla')" aria-label="Search cars">
+        <i id="searchIcon" class="fa fa-search" title="Search"></i>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero animate-in" style="margin-top:14px;">
+      <div class="text">
+        <strong>Discover your next car</strong>
+        <div style="opacity:.9;margin-top:6px">Filter by type, search by model, view details and book test drives instantly.</div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="document.getElementById('showroomSection').scrollIntoView({behavior:'smooth'})">Explore Showroom</button>
+        <button class="btn btn-warm" onclick="openWishlist()">Wishlist <span id="wishBadge" style="margin-left:8px;background:#062033;color:var(--accent-warm);padding:6px 8px;border-radius:8px;font-weight:800">0</span></button>
+      </div>
+    </div>
+
+    <!-- SHOWROOM SECTION -->
+    <section id="showroomSection" aria-labelledby="showroomTitle" class="animate-in">
+      <h2 id="showroomTitle" class="section-title">Featured Cars</h2>
+
+      <div class="controls">
+        <button class="filter-btn active" data-cat="all">All</button>
+        <button class="filter-btn" data-cat="suv">SUV</button>
+        <button class="filter-btn" data-cat="sedan">Sedan</button>
+        <button class="filter-btn" data-cat="sports">Sports</button>
+        <button class="filter-btn" data-cat="electric">Electric</button>
+        <button class="filter-btn" data-cat="luxury">Luxury</button>
+
+        <input id="miniSearch" placeholder="Quick search (e.g. 'Model S')" aria-label="Quick search">
+      </div>
+
+      <div class="car-grid" id="carGrid" aria-live="polite">
+        <!-- cards injected by JS -->
+      </div>
+    </section>
+
+  </div> <!-- .page -->
+
+  <!-- SOCIAL LEFT -->
+  <div class="social-left" aria-hidden="false">
+    <a href="#" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="#" title="X / Twitter" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+    <a href="#" title="Instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="#" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+  </div>
+
+  <!-- WISHLIST BUBBLE + DRAWER -->
+  <div class="wishlist-bubble" role="region" aria-label="Wishlist">
+    <div style="font-weight:700">Wishlist</div>
+    <div class="wish-count" id="wishCount">0</div>
+    <button class="btn" style="margin-left:8px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff" onclick="openWishlist()">Open</button>
+  </div>
+
+  <div class="wish-drawer" id="wishDrawer" aria-hidden="true" aria-label="Saved cars">
+    <h3 style="margin:8px 0 10px">Your saved cars</h3>
+    <div id="wishListContainer" style="display:flex;flex-direction:column;gap:8px"></div>
+    <div style="margin-top:12px; display:flex; gap:8px;">
+      <button class="btn btn-warm" onclick="clearWishlist()">Clear Wishlist</button>
+      <button class="btn" onclick="closeWishlist()">Close</button>
+    </div>
+  </div>
+
+  <!-- DETAILS MODAL -->
+  <div class="modal" id="detailsModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-card" role="document">
+      <div class="gallery">
+        <img id="galleryMain" class="gallery-main" src="" alt="Car image">
+        <div class="gallery-thumbs" id="galleryThumbs" aria-hidden="false"></div>
+      </div>
+
+      <div class="modal-info">
+        <div style="display:flex;gap:10px;align-items:center">
+          <h3 id="modalTitle" style="margin:0"></h3>
+          <div style="margin-left:auto;font-weight:800" id="modalPrice"></div>
+        </div>
+
+        <div class="rating" id="modalRating">★★★★★</div>
+        <p id="modalDesc" style="opacity:.9"></p>
+
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="btn btn-primary" id="bookTestDriveBtn">Book Test Drive</button>
+          <button class="btn" id="addWishlistBtn">Add to Wishlist</button>
+        </div>
+
+        <div style="margin-top:8px">
+          <small style="opacity:.86">Share:</small>
+          <div style="margin-top:6px; display:flex; gap:8px">
+            <a href="#" class="share" data-platform="facebook" title="Share on Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="share" data-platform="twitter" title="Share on X"><i class="fab fa-x-twitter"></i></a>
+            <a href="#" class="share" data-platform="linkedin" title="Share on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <small style="opacity:.8">Specifications & features included in description above.</small>
+        </div>
+      </div>
+
+      <button class="modal-close" id="detailsClose" aria-label="Close details">✕</button>
+    </div>
+  </div>
+
+  <!-- TEST DRIVE FORM MODAL -->
+  <div class="modal" id="tdModal" aria-hidden="true">
+    <div class="modal-card" style="max-width:640px">
+      <div style="width:100%">
+        <h3 id="tdTitle">Book Test Drive</h3>
+        <p style="opacity:.9;margin:6px 0 12px">Fill the form below. We'll contact you to confirm the booking.</p>
+
+        <form id="tdForm" method="POST" action="https://formspree.io/f/maypkxyz">
+          <input type="hidden" name="car_model" id="td_car_model" value="">
+          <input name="name" id="td_name" type="text" placeholder="Your full name" required>
+          <input name="email" id="td_email" type="email" placeholder="Email address" required>
+          <input name="phone" id="td_phone" type="tel" placeholder="Phone (optional)">
+          <input name="preferred_date" id="td_date" type="date" required>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn btn-primary" type="submit">Send Request</button>
+            <button type="button" class="btn" id="tdCancel">Cancel</button>
+          </div>
+
+          <div class="td-success" id="tdSuccess">✅ Request sent — we'll contact you shortly.</div>
+          <div class="td-error" id="tdError">❌ Submission failed. Try again later.</div>
+        </form>
+      </div>
+
+      <button class="modal-close" id="tdClose" aria-label="Close booking">✕</button>
+    </div>
+  </div>
+
+  <!-- CHAT POPUP (site-wide) -->
+  <div id="chatWidget" style="position:fixed; right:22px; bottom:22px; z-index:1205;">
+    <button id="chatToggle" class="btn-warm" title="Chat with AutoBot" style="border-radius:50%; width:62px; height:62px; font-size:22px; border:none; box-shadow:0 12px 30px rgba(0,0,0,0.4)">
+      <i class="fa-solid fa-comments"></i>
+    </button>
+
+    <div id="chatWindow" style="display:none; width:360px; max-width:92vw; background:linear-gradient(180deg, rgba(0,0,0,0.62), rgba(0,0,0,0.5)); border-radius:12px; margin-top:12px; box-shadow:0 10px 30px rgba(0,0,0,0.45); overflow:hidden;">
+      <div style="background:var(--accent-warm); color:#062033; padding:10px; font-weight:800; display:flex; justify-content:space-between; align-items:center">
+        <span>AutoBot — Help</span>
+        <button id="chatClose" style="background:transparent;border:none;cursor:pointer;font-size:18px">✕</button>
+      </div>
+
+      <div id="chatMsgs" style="height:280px; overflow:auto; padding:12px; display:flex; flex-direction:column; gap:8px; background: rgba(255,255,255,0.02)">
+        <div style="align-self:flex-start; background:rgba(255,255,255,0.03); padding:8px;border-radius:12px;max-width:82%">Hi — I'm AutoBot. Try: "Book test drive", "Show SUVs", or send your message.</div>
+      </div>
+
+      <div style="display:flex; gap:8px; padding:10px; background: rgba(0,0,0,0.05)">
+        <input id="chatInput" placeholder="Type message..." style="flex:1;padding:8px;border-radius:10px;border:none;outline:none;background:rgba(255,255,255,0.03);color:#fff">
+        <button id="chatSend" class="btn btn-primary">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer style="width:100%; max-width:var(--max-width); margin:18px auto 40px; color: #dfeaf4; text-align:center; opacity:.9">
+    <small>© 2025 Auto Spares & Car Showroom — Built with care</small>
+  </footer>
+
+<script>
+/* ===========================================================
+   CONFIG
+   - Update FORMSPREE_ENDPOINT with your Formspree form URL
+   =========================================================== */
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/maypkxyz'; // <-- replace with your real endpoint
+
+/* ===========================================================
+   SAMPLE CAR DATA (id, name, price, category, images[], desc, rating)
+   - Add or edit items as needed
+   =========================================================== */
+const carData = [
+  { id: 1, name: "Range Rover Sport", price: "$85,000", cat: "suv",
+    images: ["https://cdn.pixabay.com/photo/2020/03/11/09/43/suv-4922870_1280.jpg"],
+    desc: "Luxury SUV with strong performance and off-road capability. Leather interior, advanced infotainment and powerful engine.", rating:4.8 },
+  { id: 2, name: "BMW X5", price: "$78,000", cat: "suv",
+    images: ["https://cdn.pixabay.com/photo/2021/02/17/09/46/bmw-6023267_1280.jpg"],
+    desc: "Comfortable and tech-packed mid-size luxury SUV. Smooth ride and sporty handling.", rating:4.6 },
+  { id: 3, name: "Mercedes-Benz C-Class", price: "$60,000", cat: "sedan",
+    images: ["https://cdn.pixabay.com/photo/2017/03/27/13/56/mercedes-2179220_1280.jpg"],
+    desc: "Refined sedan with quality interiors and efficient performance.", rating:4.5 },
+  { id: 4, name: "Toyota Camry", price: "$30,000", cat: "sedan",
+    images: ["https://cdn.pixabay.com/photo/2016/11/29/09/32/car-1867051_1280.jpg"],
+    desc: "Reliable family sedan with great fuel economy and resale value.", rating:4.4 },
+  { id: 5, name: "Ferrari 488 GTB", price: "$250,000", cat: "sports",
+    images: ["https://cdn.pixabay.com/photo/2016/04/01/09/17/car-1300629_1280.png"],
+    desc: "Supercar performance with breathtaking design and track-capable dynamics.", rating:4.95 },
+  { id: 6, name: "Lamborghini Huracán", price: "$310,000", cat: "sports",
+    images: ["https://cdn.pixabay.com/photo/2017/03/13/19/44/car-2147692_1280.jpg"],
+    desc: "Exotic supercar delivering an unforgettable driving experience.", rating:4.9 },
+  { id: 7, name: "Tesla Model S", price: "$95,000", cat: "electric",
+    images: ["https://cdn.pixabay.com/photo/2020/09/14/20/36/tesla-5579961_1280.jpg"],
+    desc: "High-performance electric with long range and advanced autopilot features.", rating:4.7 },
+  { id: 8, name: "Porsche Taycan", price: "$110,000", cat: "electric",
+    images: ["https://cdn.pixabay.com/photo/2021/05/16/16/22/porsche-taycan-6258584_1280.jpg"],
+    desc: "Sporty electric with Porsche DNA and sharp handling.", rating:4.6 },
+  { id: 9, name: "Audi e-tron", price: "$82,000", cat: "electric",
+    images: ["https://cdn.pixabay.com/photo/2016/11/19/12/53/car-1835506_1280.jpg"],
+    desc: "Luxury electric SUV with good comfort and features.", rating:4.5 },
+  { id: 10, name: "BMW i8 Hybrid", price: "$140,000", cat: "luxury",
+    images: ["https://cdn.pixabay.com/photo/2018/05/07/16/41/bmw-3382790_1280.jpg"],
+    desc: "Futuristic hybrid sports car with eye-catching looks.", rating:4.4 },
+  { id: 11, name: "Mustang GT", price: "$48,000", cat: "sports",
+    images: ["https://cdn.pixabay.com/photo/2016/01/19/17/51/ford-1149713_1280.jpg"],
+    desc: "Iconic muscle car with strong performance.", rating:4.45 },
+  { id: 12, name: "Lexus RX 500h", price: "$70,000", cat: "luxury",
+    images: ["https://cdn.pixabay.com/photo/2016/11/29/03/36/lexus-1868721_1280.jpg"],
+    desc: "Premium hybrid SUV blending luxury and efficiency.", rating:4.55 }
+];
+
+/* ===========================================================
+   UTILS
+   =========================================================== */
+function qs(sel, ctx=document) { return ctx.querySelector(sel); }
+function qsa(sel, ctx=document) { return Array.from(ctx.querySelectorAll(sel)); }
+function el(tag, props={}) { const e = document.createElement(tag); Object.assign(e, props); return e; }
+
+/* ===========================================================
+   RENDER CAR GRID
+   =========================================================== */
+const carGrid = qs('#carGrid');
+
+function renderCard(car) {
+  const card = el('article', { className: 'car-card animate-in', tabIndex: 0 });
+  card.dataset.cat = car.cat;
+  card.dataset.id = car.id;
+  card.innerHTML = `
+    <button class="wishlist-btn" aria-label="toggle wishlist" title="Save to wishlist"><i class="fa fa-heart"></i></button>
+    <img src="${car.images[0]}" alt="${car.name}">
+    <div class="card-body">
+      <div class="meta"><h3>${car.name}</h3><div class="price">${car.price}</div></div>
+      <p style="opacity:.9;margin:6px 0 0">${car.desc.split('.').slice(0,1).join('.')}. <small style="opacity:.75">More details available.</small></p>
+      <div class="card-actions">
+        <button class="small details small-btn" data-id="${car.id}">View Details</button>
+        <button class="small small-book btn-primary" data-id="${car.id}">Book Test Drive</button>
+      </div>
+    </div>
+  `;
+  // wishlist toggle handler (delegated in init)
+  return card;
+}
+
+function renderGrid(list = carData) {
+  carGrid.innerHTML = '';
+  if(list.length === 0) {
+    carGrid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:rgba(255,255,255,0.7)">No cars found.</div>`;
+    return;
+  }
+  list.forEach(c => carGrid.appendChild(renderCard(c)));
+}
+
+/* ===========================================================
+   FILTERS & SEARCH
+   =========================================================== */
+function initFilters() {
+  qsa('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      qsa('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const cat = btn.dataset.cat;
+      const q = qs('#miniSearch').value.trim().toLowerCase();
+      applyFilters(cat, q);
+    });
+  });
+
+  qs('#miniSearch').addEventListener('input', e => {
+    const q = e.target.value.trim().toLowerCase();
+    const cat = qs('.filter-btn.active').dataset.cat;
+    applyFilters(cat, q);
+  });
+
+  qs('#searchBar').addEventListener('input', e => {
+    const q = e.target.value.trim().toLowerCase();
+    const cat = qs('.filter-btn.active').dataset.cat;
+    applyFilters(cat, q);
+  });
+
+  qs('#searchIcon').addEventListener('click', () => {
+    const q = qs('#searchBar').value.trim().toLowerCase();
+    const cat = qs('.filter-btn.active').dataset.cat;
+    applyFilters(cat, q);
+  });
+}
+
+function applyFilters(category='all', query='') {
+  let list = carData.slice();
+  if(category && category !== 'all') list = list.filter(c => c.cat === category);
+  if(query) list = list.filter(c => c.name.toLowerCase().includes(query) || c.desc.toLowerCase().includes(query));
+  renderGrid(list);
+}
+
+/* ===========================================================
+   DETAILS MODAL (gallery, description, share, wishlist, booking)
+   =========================================================== */
+const detailsModal = qs('#detailsModal');
+const detailsClose = qs('#detailsClose');
+const galleryMain = qs('#galleryMain');
+const galleryThumbs = qs('#galleryThumbs');
+const modalTitle = qs('#modalTitle');
+const modalPrice = qs('#modalPrice');
+const modalDesc = qs('#modalDesc');
+const modalRating = qs('#modalRating');
+const bookTestDriveBtn = qs('#bookTestDriveBtn');
+const addWishlistBtn = qs('#addWishlistBtn');
+
+let currentCar = null;
+
+function openDetails(id) {
+  const car = carData.find(c=>c.id==id);
+  if(!car) return;
+  currentCar = car;
+  modalTitle.textContent = car.name;
+  modalPrice.textContent = car.price;
+  modalDesc.textContent = car.desc;
+  modalRating.textContent = '★'.repeat(Math.round(car.rating)) + ' (' + car.rating.toFixed(1) + ')';
+  // gallery
+  galleryMain.src = car.images[0] || '';
+  galleryThumbs.innerHTML = '';
+  (car.images || []).forEach((src, i) => {
+    const t = el('img'); t.src = src; t.alt = car.name + ' ' + (i+1);
+    if(i===0) t.classList.add('active');
+    t.addEventListener('click', ()=> {
+      galleryMain.src = src;
+      qsa('#galleryThumbs img').forEach(i=>i.classList.remove('active'));
+      t.classList.add('active');
+    });
+    galleryThumbs.appendChild(t);
+  });
+  // wishlist button label
+  const inWish = isWish(car.id);
+  addWishlistBtn.textContent = inWish ? 'Saved in Wishlist' : 'Add to Wishlist';
+  addWishlistBtn.classList.toggle('active', inWish);
+
+  detailsModal.classList.add('show');
+  detailsModal.setAttribute('aria-hidden','false');
+}
+detailsClose.addEventListener('click', ()=> {
+  detailsModal.classList.remove('show');
+  detailsModal.setAttribute('aria-hidden','true');
+});
+
+/* ===========================================================
+   TEST DRIVE FORM modal
+   - submits to Formspree endpoint via fetch
+   =========================================================== */
+const tdModal = qs('#tdModal');
+const tdClose = qs('#tdClose');
+const tdCancel = qs('#tdCancel');
+const tdForm = qs('#tdForm');
+const tdCarModel = qs('#td_car_model');
+const tdSuccess = qs('#tdSuccess');
+const tdError = qs('#tdError');
+
+function openTestDrive(car) {
+  currentCar = car;
+  qs('#tdTitle').textContent = `Book Test Drive — ${car.name}`;
+  tdCarModel.value = car.name;
+  tdForm.reset();
+  tdSuccess.style.display = 'none';
+  tdError.style.display = 'none';
+  tdModal.classList.add('show');
+  tdModal.setAttribute('aria-hidden','false');
+}
+
+tdClose.addEventListener('click', closeTdModal);
+tdCancel.addEventListener('click', closeTdModal);
+
+function closeTdModal(){
+  tdModal.classList.remove('show');
+  tdModal.setAttribute('aria-hidden','true');
+}
+
+/* handle submit - send to Formspree */
+tdForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  tdSuccess.style.display = 'none';
+  tdError.style.display = 'none';
+
+  const data = new FormData(tdForm);
+  data.append('_timestamp', new Date().toISOString());
+
+  try {
+    const res = await fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: data
+    });
+    if(res.ok) {
+      tdSuccess.style.display = 'block';
+      tdError.style.display = 'none';
+      tdForm.reset();
+      setTimeout(closeTdModal, 1500);
+    } else {
+      const body = await res.json().catch(()=>({}));
+      tdError.textContent = body.error || 'Submission failed. Please try again later.';
+      tdError.style.display = 'block';
+    }
+  } catch(err) {
+    tdError.textContent = 'Network error. Try again later.';
+    tdError.style.display = 'block';
+  }
+});
+
+/* ===========================================================
+   WISHLIST (localStorage)
+   =========================================================== */
+const WKEY = 'autoshowroom_wishlist_v1';
+function getWishlist(){ return JSON.parse(localStorage.getItem(WKEY) || '[]'); }
+function saveWishlist(arr){ localStorage.setItem(WKEY, JSON.stringify(arr)); updateWishBadge(); }
+
+function addWish(id) {
+  const w = getWishlist();
+  if(!w.includes(id)) { w.push(id); saveWishlist(w); }
+}
+function removeWish(id) {
+  let w = getWishlist();
+  w = w.filter(x=>x!=id); saveWishlist(w);
+}
+function isWish(id) { return getWishlist().includes(id); }
+
+function updateWishBadge(){
+  qs('#wishCount').textContent = getWishlist().length || 0;
+  qs('#wishBadge').textContent = getWishlist().length || 0;
+}
+updateWishBadge();
+
+function openWishlist(){
+  const list = getWishlist();
+  const container = qs('#wishListContainer');
+  container.innerHTML = '';
+  if(list.length === 0) {
+    container.innerHTML = '<div style="opacity:.85">No saved cars yet. Click ♥ on any car to save.</div>';
+  } else {
+    list.forEach(id => {
+      const car = carData.find(c=>c.id==id);
+      if(!car) return;
+      const row = el('div', { style: 'display:flex;gap:8px; align-items:center; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.03)' });
+      row.innerHTML = `<img src="${car.images[0]}" alt="${car.name}" style="width:70px;height:50px;object-fit:cover;border-radius:6px"><div style="flex:1"><strong>${car.name}</strong><div style="opacity:.8">${car.price}</div></div>`;
+      const openBtn = el('button', { className:'btn btn-primary', innerText:'View' });
+      openBtn.addEventListener('click', ()=> { openDetails(car.id); closeWishlist(); });
+      const delBtn = el('button', { className:'btn', innerText:'Remove' });
+      delBtn.addEventListener('click', ()=> { removeWish(car.id); openWishlist(); });
+      row.appendChild(openBtn); row.appendChild(delBtn);
+      container.appendChild(row);
+    });
+  }
+  qs('#wishDrawer').classList.add('show');
+}
+function closeWishlist(){ qs('#wishDrawer').classList.remove('show'); }
+
+function clearWishlist(){ localStorage.removeItem(WKEY); updateWishBadge(); openWishlist(); }
+
+/* ===========================================================
+   CHATBOT (AutoBot) - basic keyword rules and Formspree submission
+   =========================================================== */
+const chatToggle = qs('#chatToggle');
+const chatWindow = qs('#chatWindow');
+const chatCloseBtn = qs('#chatClose');
+const chatMsgs = qs('#chatMsgs');
+const chatInput = qs('#chatInput');
+const chatSend = qs('#chatSend');
+
+chatToggle.addEventListener('click', ()=> {
+  chatWindow.style.display = chatWindow.style.display === 'block' ? 'none' : 'block';
+});
+
+chatCloseBtn.addEventListener('click', ()=> chatWindow.style.display = 'none');
+
+chatSend.addEventListener('click', sendChatMessage);
+chatInput.addEventListener('keydown', (e)=> { if(e.key === 'Enter') sendChatMessage(); });
+
+async function sendChatMessage(){
+  const text = chatInput.value.trim();
+  if(!text) return;
+  appendChat('user', text);
+  chatInput.value = '';
+
+  // send to Formspree (so you receive a copy via email)
+  try {
+    await fetch(FORMSPREE_ENDPOINT, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Accept':'application/json' },
+      body: JSON.stringify({ message: text, source:'autobot_chat', timestamp: new Date().toISOString() })
+    });
+  } catch(e) { /* fail silently for chat send */ }
+
+  // simulate reply: keyword-based
+  setTimeout(()=> {
+    const reply = generateReply(text);
+    appendChat('agent', reply);
+  }, 600 + Math.random()*800);
+}
+
+function appendChat(who, text){
+  const box = el('div');
+  box.style.maxWidth = '86%';
+  box.style.padding = '8px 10px';
+  box.style.borderRadius = '12px';
+  box.style.marginBottom = '6px';
+  if(who === 'user'){ box.style.alignSelf = 'flex-end'; box.style.background = 'linear-gradient(90deg, #f1c40f, #f39c12)'; box.style.color = '#062033'; box.innerHTML = `<strong>You:</strong> ${escapeHtml(text)}`; }
+  else { box.style.alignSelf = 'flex-start'; box.style.background = 'rgba(255,255,255,0.03)'; box.style.color = '#fff'; box.innerHTML = `<strong>AutoBot:</strong> ${escapeHtml(text)}`; }
+  chatMsgs.appendChild(box);
+  chatMsgs.scrollTop = chatMsgs.scrollHeight;
+}
+
+function generateReply(text){
+  const q = text.toLowerCase();
+  if(q.includes('test') || q.includes('book')) return 'I can help book a test drive. Which model would you like? You can type the model name or click "Book Test Drive" on a car.';
+  if(q.includes('suv')) return 'We have Range Rover Sport, BMW X5, Audi Q7 — view the showroom to explore.';
+  if(q.includes('electric') || q.includes('tesla')) return 'We have Tesla Model S, Porsche Taycan and Audi e-tron — use the filters to show Electric cars.';
+  if(q.includes('price') || q.includes('$')) return 'Tell me the model or budget (e.g. "under $50k") and I will list candidates.';
+  if(q.includes('location') || q.includes('where')) return 'We are located at 123 Showroom Ave. Open Mon–Sat 9am–6pm. Need directions?';
+  if(q.includes('rep') || q.includes('human') || q.includes('talk')) return "I'll pass your message to our team — what's your phone or email?";
+  return "I'm AutoBot — I can help book test drives, find cars, or show the showroom. Try 'Show SUVs' or 'Book test drive'.";
+}
+
+/* simple html escapes */
+function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+/* ===========================================================
+   UI DELEGATION: handle card buttons, wishlist toggles, share
+   =========================================================== */
+function initDelegation() {
+  // Details & Book buttons (delegation via grid)
+  carGrid.addEventListener('click', (e) => {
+    const detailBtn = e.target.closest('.details');
+    if(detailBtn) {
+      const id = detailBtn.dataset.id;
+      openDetails(Number(id));
+      return;
+    }
+    const bookBtn = e.target.closest('.small-book');
+    if(bookBtn) {
+      const id = bookBtn.dataset.id;
+      const car = carData.find(c=>c.id==id);
+      if(car) openTestDrive(car);
+      return;
+    }
+    const wishBtn = e.target.closest('.wishlist-btn');
+    if(wishBtn) {
+      const card = wishBtn.closest('.car-card');
+      const id = Number(card.dataset.id);
+      toggleWishUI(id, wishBtn);
+    }
+  });
+
+  // add wishlist from details modal
+  addWishlistBtn.addEventListener('click', ()=> {
+    if(!currentCar) return;
+    if(isWish(currentCar.id)) removeWish(currentCar.id);
+    else addWish(currentCar.id);
+    openWishlist(); // open drawer to reflect update
+  });
+
+  // book test drive from details modal
+  bookTestDriveBtn.addEventListener('click', ()=> {
+    openTestDrive(currentCar);
+    detailsModal.classList.remove('show');
+  });
+
+  // sharing icons (delegated)
+  document.addEventListener('click', (e) => {
+    const share = e.target.closest('.share');
+    if(!share) return;
+    e.preventDefault();
+    const platform = share.dataset.platform;
+    const title = encodeURIComponent(currentCar ? (`${currentCar.name} — ${currentCar.price}`) : document.title);
+    const url = encodeURIComponent(window.location.href);
+    let shareUrl = '';
+    if(platform === 'facebook') shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${title}`;
+    if(platform === 'twitter') shareUrl = `https://twitter.com/intent/tweet?text=${title}%20${url}`;
+    if(platform === 'linkedin') shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+    window.open(shareUrl, '_blank', 'noopener');
+  });
+}
+
+function toggleWishUI(id, btnEl) {
+  if(isWish(id)) { removeWish(id); btnEl.classList.remove('active'); btnEl.innerHTML = '<i class="fa fa-heart"></i>'; }
+  else { addWish(id); btnEl.classList.add('active'); btnEl.innerHTML = '<i class="fa fa-heart"></i>'; }
+  updateWishBadge();
+}
+
+/* ===========================================================
+   INITIALIZE: render grid & attach handlers
+   =========================================================== */
+renderGrid();
+initFilters();
+initDelegation();
+
+/* Update wishlist icons inside cards after initial render */
+function syncWishlistOnCards(){
+  qsa('.car-card').forEach(card => {
+    const btn = card.querySelector('.wishlist-btn');
+    const id = Number(card.dataset.id);
+    btn.classList.toggle('active', isWish(id));
+    btn.title = isWish(id) ? 'Saved in Wishlist' : 'Save to Wishlist';
+  });
+}
+syncWishlistOnCards();
+updateWishBadge();
+
+/* Monitor localStorage changes (cross-tab) */
+window.addEventListener('storage', ()=> { syncWishlistOnCards(); updateWishBadge(); });
+
+/* Close modal on Esc */
+document.addEventListener('keydown', e=> {
+  if(e.key === 'Escape') {
+    detailsModal.classList.remove('show');
+    tdModal.classList.remove('show');
+    qs('#chatWindow').style.display = 'none';
+    qs('#wishDrawer').classList.remove('show');
+  }
+});
+
+/* Graceful focus management */
+detailsModal.addEventListener('click', (e)=> { if(e.target === detailsModal) detailsModal.classList.remove('show'); });
+tdModal.addEventListener('click', (e)=> { if(e.target === tdModal) tdModal.classList.remove('show'); });
+
+/* Ensure wishlist badge updates whenever renderGrid re-renders */
+const obs = new MutationObserver(()=> { syncWishlistOnCards(); });
+obs.observe(carGrid, { childList: true, subtree: true });
+
+/* Optional: auto open chat once for new visitors */
+if(!localStorage.getItem('autobot_seen_v1')) {
+  setTimeout(()=> {
+    qs('#chatWindow').style.display = 'block';
+    localStorage.setItem('autobot_seen_v1', '1');
+  }, 1400);
+}
+</script>
+</body>
+</html>

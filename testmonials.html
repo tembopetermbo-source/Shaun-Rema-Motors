@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Auto Spares & Car Showroom — Testimonials</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --accent:#1a2a6c;
+      --warm:#f1c40f;
+      --glass:rgba(255,255,255,0.04);
+      --radius:12px;
+      --maxw:1120px;
+    }
+    * {box-sizing:border-box;}
+    body {
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(120deg,#071428,#0f2233);
+      color:#eaf2fb;
+      min-height:100vh;
+    }
+    nav {
+      background:rgba(0,0,0,0.3);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:12px 22px;
+      backdrop-filter:blur(10px);
+      position:sticky;
+      top:0;
+      z-index:999;
+    }
+    nav a {
+      color:#fff;
+      text-decoration:none;
+      font-weight:600;
+      margin:0 10px;
+      transition:color .3s;
+    }
+    nav a:hover {color:var(--warm);}
+    .page {max-width:var(--maxw);margin:18px auto;padding:0 18px;}
+    header.hero {
+      border-radius:var(--radius);
+      padding:28px;
+      background:linear-gradient(90deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));
+      box-shadow:0 18px 60px rgba(2,6,23,0.6);
+    }
+    header.hero h1 {margin:0;font-size:1.8rem;color:var(--warm);}
+    .testimonial-wrap {margin-top:18px;display:flex;flex-direction:column;gap:18px;align-items:center;}
+    .testimonial-cards {display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
+    .testimonial-card {
+      width:300px;
+      background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02));
+      padding:18px;
+      border-radius:12px;
+      box-shadow:0 12px 36px rgba(0,0,0,0.4);
+      text-align:center;
+      transform:translateY(12px);
+      opacity:0;
+      transition:transform .6s,opacity .6s;
+      backdrop-filter:blur(6px);
+    }
+    .testimonial-card.visible {transform:none;opacity:1;}
+    .testimonial-avatar {width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--warm);margin-bottom:10px;}
+    .testimonial-text {font-style:italic;color:#f1f1f1;margin-bottom:12px;}
+    .testimonial-name {font-weight:800;color:var(--warm);margin-bottom:6px;}
+    .testimonial-stars {color:#ffd700;font-size:1.1rem;margin-bottom:8px;}
+    .btn {
+      padding:10px 18px;border:none;border-radius:8px;cursor:pointer;font-weight:600;transition:all .3s;
+    }
+    .btn-primary {
+      background:var(--warm);
+      color:#062033;
+    }
+    .btn-primary:hover {
+      transform:translateY(-2px);
+      box-shadow:0 6px 18px rgba(241,196,15,0.5);
+    }
+    .leave-form {
+      max-width:640px;width:100%;
+      background:rgba(255,255,255,0.03);
+      padding:14px;border-radius:12px;
+      box-shadow:0 12px 36px rgba(0,0,0,0.4);
+    }
+    .leave-form input,.leave-form textarea {
+      width:100%;padding:10px;border-radius:8px;border:none;
+      background:rgba(255,255,255,0.02);color:#fff;outline:none;margin-bottom:10px;
+    }
+
+    /* Star rating styles */
+    .rating {
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      margin-bottom:10px;
+      cursor:pointer;
+    }
+    .rating i {
+      font-size:1.5rem;
+      color:#555;
+      transition:color .2s;
+    }
+    .rating i.active,
+    .rating i:hover,
+    .rating i:hover ~ i {
+      color:#ffd700;
+    }
+
+    .social-fixed {
+      position:fixed;left:16px;bottom:18px;
+      display:flex;flex-direction:column;gap:8px;z-index:900;
+    }
+    .social-fixed a {
+      width:48px;height:48px;border-radius:10px;
+      display:inline-flex;align-items:center;justify-content:center;
+      color:#fff;background:rgba(255,255,255,0.05);transition:all .2s;
+    }
+    .social-fixed a:hover {
+      transform:translateY(-6px) scale(1.05);
+      box-shadow:0 12px 28px rgba(0,0,0,0.45);
+      background:var(--warm);color:#062033;
+    }
+
+    .chat-fab {position:fixed;right:20px;bottom:20px;z-index:950;}
+    .chat-window {
+      position:fixed;right:20px;bottom:96px;width:360px;max-width:92vw;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.6);
+      overflow:hidden;display:none;flex-direction:column;z-index:955;
+    }
+    .chat-window .header {
+      background:var(--warm);color:#062033;
+      padding:10px 12px;display:flex;justify-content:space-between;align-items:center;
+    }
+
+    /* Modal styles */
+    .modal {
+      position:fixed;inset:0;background:rgba(0,0,0,0.7);
+      display:flex;align-items:center;justify-content:center;
+      z-index:1200;visibility:hidden;opacity:0;
+      transition:opacity .3s,visibility .3s;
+    }
+    .modal.show {visibility:visible;opacity:1;}
+    .modal-content {
+      background:linear-gradient(135deg,#0f2233,#071428);
+      padding:28px;border-radius:12px;
+      text-align:center;max-width:400px;width:90%;
+      box-shadow:0 12px 40px rgba(0,0,0,0.5);
+      animation:fadeInUp .5s ease forwards;
+    }
+    .modal-content i {
+      color:var(--warm);font-size:3rem;margin-bottom:12px;
+      animation:pop .5s ease;
+    }
+    @keyframes fadeInUp {
+      from {opacity:0;transform:translateY(20px);}
+      to {opacity:1;transform:translateY(0);}
+    }
+    @keyframes pop {
+      0% {transform:scale(0);}
+      80% {transform:scale(1.1);}
+      100% {transform:scale(1);}
+    }
+
+    @media (max-width:720px){
+      .testimonial-card{width:90%}
+      .testimonial-cards{flex-direction:column;align-items:center}
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="showroomsection.html">Showroom</a>
+      <a href="testimonials.html">Testimonials</a>
+      <a href="contact.html">Contact</a>
+      <a href="about.html">About</a>
+    </div>
+    <div><a href="#" style="color:var(--warm);font-weight:700">AutoBot 🚘</a></div>
+  </nav>
+
+  <div class="page">
+    <header class="hero">
+      <h1>What Our Customers Say</h1>
+      <p>Real feedback from drivers, buyers and service customers — honest reviews you can trust.</p>
+    </header>
+
+    <section id="testimonialsSection">
+      <div class="testimonial-wrap">
+        <div class="testimonial-cards" id="testimonialCards"></div>
+        <div style="margin-top:8px;text-align:center">
+          <button id="loadMoreBtn" class="btn btn-primary">Load More Reviews</button>
+        </div>
+
+        <!-- Feedback Form -->
+        <div class="leave-form" id="leaveFeedback" style="margin-top:18px">
+          <h3 style="margin-top:0;color:var(--warm)">Leave your feedback</h3>
+          <form id="feedbackForm">
+            <input type="text" name="name" placeholder="Your name" required>
+            <input type="email" name="email" placeholder="Email" required>
+
+            <div class="rating" id="ratingStars">
+              <i class="fa-regular fa-star" data-value="1"></i>
+              <i class="fa-regular fa-star" data-value="2"></i>
+              <i class="fa-regular fa-star" data-value="3"></i>
+              <i class="fa-regular fa-star" data-value="4"></i>
+              <i class="fa-regular fa-star" data-value="5"></i>
+            </div>
+            <input type="hidden" id="ratingValue" name="rating" value="0">
+
+            <textarea name="message" rows="4" placeholder="Write your feedback..." required></textarea>
+            <div style="display:flex;gap:10px">
+              <button type="submit" class="btn btn-primary">Send Feedback</button>
+              <button type="button" class="btn btn-primary" onclick="document.getElementById('feedbackForm').reset()">Clear</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Thank You Modal -->
+  <div class="modal" id="thankYouModal">
+    <div class="modal-content">
+      <i class="fa-solid fa-star"></i>
+      <h2>Thank You!</h2>
+      <p>Your feedback helps us improve and deliver even better experiences. 🚗</p>
+      <button class="btn btn-primary" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <!-- Social -->
+  <div class="social-fixed">
+    <a href="#"><i class="fab fa-facebook-f"></i></a>
+    <a href="#"><i class="fab fa-x-twitter"></i></a>
+    <a href="#"><i class="fab fa-instagram"></i></a>
+    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+  </div>
+
+  <!-- Chat Popup -->
+  <div class="chat-fab">
+    <button id="chatToggle" style="background:linear-gradient(90deg,var(--warm),#f39c12);border:none;width:64px;height:64px;border-radius:50%;box-shadow:0 12px 36px rgba(0,0,0,0.45);cursor:pointer;color:#062033;font-size:20px"><i class="fa fa-comments"></i></button>
+    <div class="chat-window" id="chatWindow">
+      <div class="header"><div><i class="fa fa-robot"></i> AutoBot</div><button id="chatClose" style="background:transparent;border:none;font-weight:800;cursor:pointer">✕</button></div>
+      <div class="body" id="chatBody" style="padding:10px;display:flex;flex-direction:column;gap:8px">
+        <div style="align-self:flex-start;padding:8px;border-radius:10px;background:rgba(255,255,255,0.03)">Hi! Want to book a test drive or share your experience?</div>
+      </div>
+      <div style="display:flex;gap:8px;padding:10px">
+        <input id="chatInput" placeholder="Type a message..." style="flex:1;padding:8px;border-radius:8px;border:none;background:rgba(255,255,255,0.03);color:#fff">
+        <button id="chatSend" class="btn btn-primary">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ID';
+
+    const testimonials = [
+      {text:"Amazing service and high-quality cars. Highly recommended!",name:"Shaun R.",stars:"⭐⭐⭐⭐⭐",avatar:"https://i.pravatar.cc/120?img=12"},
+      {text:"Friendly staff helped me find my dream car easily!",name:"Priya S.",stars:"⭐⭐⭐⭐⭐",avatar:"https://i.pravatar.cc/120?img=5"},
+      {text:"Quick and smooth test drive booking process!",name:"Jason T.",stars:"⭐⭐⭐⭐",avatar:"https://i.pravatar.cc/120?img=18"},
+      {text:"Their post-sale service is top-notch!",name:"Elena V.",stars:"⭐⭐⭐⭐⭐",avatar:"https://i.pravatar.cc/120?img=29"},
+      {text:"Affordable prices and great offers.",name:"Mohammed A.",stars:"⭐⭐⭐⭐⭐",avatar:"https://i.pravatar.cc/120?img=32"},
+      {text:"Excellent customer support!",name:"Christina M.",stars:"⭐⭐⭐⭐",avatar:"https://i.pravatar.cc/120?img=23"},
+      {text:"Wide range of cars and flexible financing plans.",name:"Daniel L.",stars:"⭐⭐⭐⭐⭐",avatar:"https://i.pravatar.cc/120?img=44"},
+      {text:"Loved the luxury car selection.",name:"Isabella W.",stars:"⭐⭐⭐⭐⭐",avatar:"https://i.pravatar.cc/120?img=27"}
+    ];
+    const container=document.getElementById('testimonialCards');
+    const loadMoreBtn=document.getElementById('loadMoreBtn');
+    let visibleCount=6;
+
+    function renderTestimonials(){
+      container.innerHTML='';
+      testimonials.slice(0,visibleCount).forEach((t,i)=>{
+        const card=document.createElement('div');
+        card.className='testimonial-card';
+        card.innerHTML=`
+          <img src="${t.avatar}" alt="${t.name}" class="testimonial-avatar">
+          <div class="testimonial-text">"${t.text}"</div>
+          <div class="testimonial-name">${t.name}</div>
+          <div class="testimonial-stars">${t.stars}</div>`;
+        container.appendChild(card);
+        setTimeout(()=>card.classList.add('visible'),150*i);
+      });
+      if(visibleCount>=testimonials.length)loadMoreBtn.style.display='none';
+    }
+    renderTestimonials();
+    loadMoreBtn.addEventListener('click',()=>{visibleCount+=3;renderTestimonials();});
+
+    // Rating logic
+    const stars=document.querySelectorAll('#ratingStars i');
+    const ratingValue=document.getElementById('ratingValue');
+    stars.forEach(star=>{
+      star.addEventListener('click',()=>{
+        ratingValue.value=star.dataset.value;
+        stars.forEach(s=>s.classList.remove('active','fa-solid'));
+        for(let i=0;i<star.dataset.value;i++){stars[i].classList.add('active','fa-solid');}
+      });
+    });
+
+    // Feedback submission with modal
+    const modal=document.getElementById('thankYouModal');
+    function closeModal(){modal.classList.remove('show');}
+    document.getElementById('feedbackForm').addEventListener('submit',async function(e){
+      e.preventDefault();
+      const fd=new FormData(this);
+      try{
+        const res=await fetch(FORMSPREE_ENDPOINT,{method:'POST',headers:{'Accept':'application/json'},body:fd});
+        if(res.ok){
+          this.reset();
+          stars.forEach(s=>s.classList.remove('active','fa-solid'));
+          modal.classList.add('show');
+        }
+      }catch(err){alert('Network error');}
+    });
+
+    // Chat
+    const chatToggle=document.getElementById('chatToggle');
+    const chatWindow=document.getElementById('chatWindow');
+    const chatClose=document.getElementById('chatClose');
+    const chatBody=document.getElementById('chatBody');
+    const chatInput=document.getElementById('chatInput');
+    const chatSend=document.getElementById('chatSend');
+    chatToggle.onclick=()=>{chatWindow.style.display=chatWindow.style.display==='block'?'none':'block';setTimeout(()=>chatInput.focus(),200);};
+    chatClose.onclick=()=>chatWindow.style.display='none';
+    chatSend.onclick=()=>{const t=chatInput.value.trim();if(!t)return;pushUser(t);simulateBot(t);chatInput.value='';};
+    chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();chatSend.click();}});
+    function pushUser(txt){const el=document.createElement('div');el.style.alignSelf='flex-end';el.style.background='linear-gradient(90deg,var(--warm),#f39c12)';el.style.color='#062033';el.style.padding='8px 10px';el.style.borderRadius='10px';el.textContent=txt;chatBody.appendChild(el);chatBody.scrollTop=chatBody.scrollHeight;}
+    function pushAgent(txt){const el=document.createElement('div');el.style.alignSelf='flex-start';el.style.background='rgba(255,255,255,0.03)';el.style.color='#fff';el.style.padding='8px 10px';el.style.borderRadius='10px';el.textContent=txt;chatBody.appendChild(el);chatBody.scrollTop=chatBody.scrollHeight;}
+    function simulateBot(q){pushAgent('AutoBot is typing...');setTimeout(()=>{chatBody.removeChild(chatBody.lastChild);pushAgent(generateBotReply(q.toLowerCase()));},800+Math.random()*900);}
+    function generateBotReply(q){
+      if(q.includes('test drive'))return'You can book a test drive by clicking “Book Test Drive” on any car page.';
+      if(q.includes('price'))return'Our prices vary by model. Would you like me to send the latest offers?';
+      if(q.includes('service'))return'Our service center is open 8am–6pm daily. Need directions?';
+      return'I’m happy to help! You can ask about cars, test drives, or service schedules.';
+    }
+  </script>
+</body>
+</html>
